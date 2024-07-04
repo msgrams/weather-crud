@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.msgrams.mapper.AirExtMapper" >
+  <resultMap id="BaseResultMap" type="com.msgrams.entity.Air" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="district_id" property="districtId" jdbcType="INTEGER" />
+    <result column="monitor_time" property="monitorTime" jdbcType="DATE" />
+    <result column="pm10" property="pm10" jdbcType="INTEGER" />
+    <result column="pm25" property="pm25" jdbcType="INTEGER" />
+    <result column="monitoring_station" property="monitoringStation" jdbcType="VARCHAR" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <insert id="insert" parameterType="com.msgrams.request.AirAddReq">
+    insert into air(district_id, monitor_time, pm10, pm25, monitoring_station)
+      value (#{districtId}, #{monitorTime}, #{pm10}, #{pm25}, #{monitoringStation})
+  </insert>
+
+  <update id="updateById" parameterType="com.msgrams.request.AirUpdateReq">
+    update air
+    set
+    <if test="districtId != null" >
+      district_id = #{districtId,jdbcType=INTEGER},
+    </if>
+    <if test="monitorTime != null" >
+      monitor_time = #{monitorTime,jdbcType=DATE},
+    </if>
+    <if test="pm10 != null" >
+      pm10 = #{pm10,jdbcType=INTEGER},
+    </if>
+    <if test="pm25 != null" >
+      pm25 = #{pm25,jdbcType=INTEGER},
+    </if>
+    <if test="monitoringStation != null" >
+      monitoring_station = #{monitoringStation,jdbcType=VARCHAR}
+    </if>
+    where
+    <if test="id != null" >
+      id = #{id,jdbcType=INTEGER}
+    </if>
+  </update>
+  <delete id="deleteById">
+    delete
+    from air
+    where id = #{id}
+  </delete>
+
+  <select id="findByDistrictId" resultMap="BaseResultMap">
+    select a.*, d.name as district_name
+    from air a, district d
+    where a.district_id = d.id
+    <if test="districtId != null">
+      and a.district_id = #{districtId}
+    </if>
+  </select>
+
+</mapper>
